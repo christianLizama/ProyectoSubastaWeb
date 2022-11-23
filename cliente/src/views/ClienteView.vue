@@ -31,13 +31,15 @@
             </vs-sidebar>
         </div>
         <div v-if="active=='subastas'">
-            <Subasta/>
+            <!-- <Subasta/> -->
+            <Chat/>
         </div>
     </div>
 </template>
 
 <script>
 import Subasta from "@/components/Subasta.vue"
+import Chat from '../components/Chat.vue';
 export default {
     
     data() {
@@ -63,8 +65,9 @@ export default {
 
     },
     components:{
-        Subasta
+        Subasta,Chat
     }
+        
 
 };
 </script>
