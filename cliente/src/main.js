@@ -13,7 +13,7 @@ import 'material-icons/iconfont/material-icons.css';
 
 Vue.use(Vuesax, {
   colors: {
-    primary:'',
+    primary:'#D957A0',
     success:'rgb(23, 201, 100)',
     danger:'rgb(242, 19, 93)',
     warning:'rgb(255, 130, 0)',

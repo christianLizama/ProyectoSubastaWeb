@@ -15,7 +15,7 @@
                             gavel
                         </span>
                     </template>
-                    Ver Subastas
+                    Ver Productos
                 </vs-sidebar-item>
 
                 <div @click="cerrarSesion">
@@ -31,8 +31,10 @@
             </vs-sidebar>
         </div>
         <div v-if="active=='subastas'">
-            <Subasta/>
-            <!-- <Chat/> -->
+            <Subasta
+            bandera="martillero"
+            />
+            <Chat/>
         </div>
     </div>
 </template>
@@ -47,7 +49,7 @@ export default {
             
             userName: this.$store.state.usuarioLogeado.userName,
             active: "subastas",
-            hover: false
+            hover: false,
         };
     },
 

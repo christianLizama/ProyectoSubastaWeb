@@ -1,6 +1,6 @@
 <template>
-    <div class="hidden">
-        <h1>Subasta de : "nombre producto"</h1>
+    <div class="contendorGrande">
+        <h1>Subasta de : {{this.subastaActiva.nameProducto}}</h1>
         <h2>Ultimo monto Pujado</h2>
         <div class="contenedorChat">
             <div class="participantes">
@@ -62,13 +62,18 @@ export default {
             ],
         };
     },
+    props:{
+        subastaActiva:{}
+    }
+    
 };
 </script>
 
 <style scoped>
-.hidden {
+.contendorGrande {
     display: flex;
     justify-content: space-around;
+    flex-direction: column;
     position: relative;
     text-align: center;
 }

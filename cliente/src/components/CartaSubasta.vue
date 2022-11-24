@@ -2,19 +2,29 @@
     <div>
         <div class="hidden">
             <vs-button color="#62B0F6" flat :active="true">
-                <div >
-                    <p>Objeto: {{this.subasta.nameProducto}}</p>
-                    <p>Estado: {{this.subasta.estado}}</p>
+                <div>
+                    <p>Objeto: {{ this.subasta.nameProducto }}</p>
+                    <p>Estado: {{ this.subasta.estado }}</p>
                     <vs-button color="#5576D4" flat :active="true">
                         <div class="hidden">
-                            <p>Monto inicial: {{this.subasta.montoInicial}}</p>
-                            <p>Ultima puja : {{this.subasta.montoFinal}}</p>
+                            <p>Monto inicial: {{ this.subasta.montoInicial }}</p>
+                            <p>Ultima puja : {{ this.subasta.montoFinal }}</p>
                         </div>
 
                     </vs-button>
                     <p>Usuario activos: 4 </p>
-                    <p>Tiempo restante: {{this.subasta.tiempo}} seg</p>
+                    <p>Tiempo restante: {{ this.subasta.tiempo }} seg</p>
+
+                    <div v-if="this.valor == 'martillero'">
+                        <vs-button color="dark">
+                            Iniciar subasta
+                        </vs-button>
+
+                    </div>
+
                 </div>
+
+
 
             </vs-button>
         </div>
@@ -35,8 +45,9 @@ export default {
     mounted() {
 
     },
-    props:{
-        subasta:[]
+    props: {
+        subasta: [],
+        valor: false
     },
     methods: {
 
@@ -47,13 +58,13 @@ export default {
 <style scoped>
 .hidden {
     display: flex;
+    justify-content: center;
     flex-direction: column;
-    text-align: left;
-    
+
 }
 
 .vs-button {
     text-align: left;
-   
+
 }
 </style>

@@ -1,41 +1,55 @@
 <template>
     <div>
-        <h3>Listado de Subastas</h3>
-        <div class="hidden">
-            <vs-row>
-                <div class="contenedor" v-for="(item, index) in subastas" :key="index">
-
-                    <CartaSubasta 
-                    :subasta="item"
-                    />
-
-                </div>
-            </vs-row>
+        <div v-if="!subastaActiva">
+            <h3>Listado de Subastas</h3>
+            <div class="hidden">
+                <vs-row>
+                    <div class="contenedor" v-for="(item, index) in subastas" :key="index">
+                        <div @click="chatSubasta(item)">
+                            <CartaSubasta :subasta="item" :valor="bandera" />
+                        </div>
 
 
+                    </div>
+                </vs-row>
 
+            </div>
+        </div>
+        <div v-if="subastaActiva">
+            <vs-button color="#F64942" @click="volver" style="position:absolute;left:50px;top: 28px;">
+                Volver
+            </vs-button>
+            <Chat 
+            :subastaActiva="this.chatSubastaActiva"
+            />
 
         </div>
-
     </div>
+
 </template>
 
 <script>
 import CartaSubasta from './CartaSubasta.vue';
+import Chat from './Chat.vue';
 
 export default {
     name: "SubastaWebListadoSubasta",
     data() {
         return {
-            subastas:[]
+            subastas: [],
+            subastaActiva: false,
+            chatSubastaActiva: {}
         };
+    },
+    props: {
+        bandera: String
     },
     created() {
         this.listarsubastas()
     },
     methods: {
         listarsubastas() {
-            this.axios.get(this.$store.getters.getLocalhost+'/subasta')
+            this.axios.get(this.$store.getters.getLocalhost + '/subasta')
                 .then((res) => {
                     this.subastas = res.data
 
@@ -44,9 +58,17 @@ export default {
                     console.log(e.response);
                 })
         },
+        chatSubasta(subasta) {
+            console.log("hosadas")
+            this.chatSubastaActiva = subasta;
+            this.subastaActiva = true
+        },
+        volver(){
+            this.subastaActiva = false;
+        }
 
     },
-    components: { CartaSubasta }
+    components: { CartaSubasta, Chat }
 };
 </script>
 
