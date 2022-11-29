@@ -12,6 +12,8 @@ import SocketioService from './services/socketio.service.js';
 export default {
   name: 'App',
   components: {
+    
+    
     HelloWorld
   },
   created() {

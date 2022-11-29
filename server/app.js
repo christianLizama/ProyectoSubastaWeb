@@ -5,15 +5,23 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const http = require('http').createServer(app);
 
+// const mongoose = require('mongoose')
+// mongoose.connect('mongodb://mongo1/mydatabase')
+//   .then(db => console.log('base de datos conectada'))
+//   .catch(err => console.log(err));
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
 
+const appPort = process.env.APPPORT
+
+app.listen(appPort, () => console.log(`App listening on port ${appPort}!`))
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -29,6 +37,7 @@ app.use(function(req, res, next) {
   next(createError(404));
 });
 
+
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
@@ -41,9 +50,11 @@ app.use(function(err, req, res, next) {
 });
 
 const io = require('socket.io')(http, {
+  allowEIO3: true,
   cors: {
-    origins: ['http://localhost:8080']
-  }
+      origin: true,
+      credentials: true,
+  },
 });
 
 io.on('connection', (socket) => {
@@ -60,10 +71,10 @@ io.on('connection', (socket) => {
 });
 
 //Puerto de socket
-var port = 3030;
+var portsocket = process.env.SOCKETPORT;
 
-http.listen(port, () => {
-  console.log('listening on :',port);
+http.listen(portsocket, () => {
+  console.log('listening on :',portsocket);
 });
 
 module.exports = app;
