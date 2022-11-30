@@ -1,13 +1,13 @@
 <template>
     <div class="contendorGrande">
-        <h1>Subasta de : {{ this.subastaActiva.producto.nombreProducto }}</h1>
-        <h2>Ultimo monto Pujado {{ this.subastaActiva.ultimaPuja }}</h2>
+        <h1>Subasta de : {{ this.subasta.producto.nombreProducto }}</h1>
+        <h2>Ultimo monto Pujado {{ this.subasta.ultimaPuja }}</h2>
         <div class="contenedorChat">
             <div class="participantes">
                 <h3>Participantes Activos</h3>
             </div>
             <div class="chat">
-                <div v-for="(item, index) in this.subastaActiva.chat.pujas" :key="index">
+                <div v-for="(item, index) in this.subasta.chat.pujas" :key="index">
 
                     <div class="left" v-if="(item.usuario.nombreUsuario != $store.state.usuarioLogeado.nombreUsuario)">
                         <vs-button color="#3B4254">
@@ -40,40 +40,44 @@ export default {
     data() {
         return {
             value5: '',
-            cosas: [
-                {
-                    nombre: "rodrigo",
-                    texto: "500",
-                    posicion: 1,
-                },
-                {
-                    nombre: "rodrigo",
-                    texto: "600",
-                    posicion: 1,
-                },
-                {
-                    nombre: "Juan",
-                    texto: "2166",
-                    posicion: 2,
-                },
-                {
-                    nombre: "Juan",
-                    texto: "23214",
-                    posicion: 2,
-                },
-            ],
+
             puja: {
                 usuario: null,
                 monto: null,
                 fecha: null,
 
-            }
+            },
+            subasta: null
         };
+    },
+    watch: {
+        'subasta.chat.pujas': function (oldvalue,newvalue) {
+
+            if(newvalue!==oldvalue){
+        
+            }
+            console.log("sadsadsadsadsadsadsa")
+        }
+
+    },
+    created() {
+        this.getSubasta()
     },
     props: {
         subastaActiva: {}
     },
     methods: {
+        getSubasta() {
+            this.axios.get('/subasta/' + this.subastaActiva._id)
+                .then((res) => {
+                    this.subasta = res.data
+                   
+
+                })
+                .catch((e) => {
+                    console.log(e.response);
+                })
+        },
         enviarPuja() {
 
             const puja = {
@@ -88,9 +92,9 @@ export default {
 
             console.log(this.puja)
 
-            this.subastaActiva.chat.pujas.push(puja)
+            this.subasta.chat.pujas.push(puja)
 
-            console.log(this.subastaActiva.chat.pujas)
+            console.log(this.subasta.chat.pujas)
 
             this.actualizarSubasta()
 
@@ -101,9 +105,9 @@ export default {
 
         },
         actualizarSubasta() {
-            this.axios.put('/subasta/'+this.subastaActiva._id,this.subastaActiva)
+            this.axios.put('/subasta/' + this.subasta._id, this.subasta)
                 .then(res => {
-                    
+
                     console.log("Se actulizo el chat")
                 })
                 .catch((e) => {
@@ -144,6 +148,9 @@ h1 {
     width: 40%;
     height: 57vh;
     margin-bottom: 20px;
+    overflow-y: scroll;
+    /* overflow-x: hidden; */
+
 }
 
 .right {
