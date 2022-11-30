@@ -45,7 +45,7 @@ export default {
     data() {
         return {
             
-            userName: this.$store.state.usuarioLogeado.userName,
+            userName: this.$store.state.usuarioLogeado.nombreUsuario,
             active: "subastas",
             hover: false
         };

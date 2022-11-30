@@ -34,24 +34,27 @@ export default {
     methods: {
         listarUsuarios() {
 
-            this.axios.get(this.$store.getters.getLocalhost + '/usuario')
+            this.axios.get('/usuario')
                 .then((res) => {
                     // console.log(response.data)
                     this.usuarios = res.data
                     var logearse = false
                     this.usuarios.forEach(element => {
 
-                        if (element.userName == this.userName) {
+                        if (element.nombreUsuario == this.userName) {
                             logearse = true
-                            if (element.pass == this.pass) {
+                            if (element.contra == this.pass) {
                                 this.openNotification("top-right", "success", "Exito", "Inicio de sesión correctamente.")
 
-
-                                if (element.rol == "Cliente") {
+                                if (element.tipoUsuario == "Licitador") {
                                     this.$store.state.usuarioLogeado = element
                                     this.$router.push({ path: '/cliente' })
                                 }
-                                else {
+                                else if(element.tipoUsuario == "Martillero") {
+                                    this.$store.state.usuarioLogeado = element
+                                    this.$router.push({ path: '/martillero' })
+                                }
+                                else{
                                     this.$store.state.usuarioLogeado = element
                                     this.$router.push({ path: '/admin' })
                                 }

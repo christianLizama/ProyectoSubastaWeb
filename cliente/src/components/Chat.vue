@@ -1,21 +1,23 @@
 <template>
     <div class="contendorGrande">
-        <h1>Subasta de : {{this.subastaActiva.nameProducto}}</h1>
-        <h2>Ultimo monto Pujado</h2>
+        <h1>Subasta de : {{ this.subastaActiva.producto.nombreProducto }}</h1>
+        <h2>Ultimo monto Pujado {{ this.subastaActiva.ultimaPuja }}</h2>
         <div class="contenedorChat">
             <div class="participantes">
                 <h3>Participantes Activos</h3>
             </div>
             <div class="chat">
-                <div v-for="(item, index) in cosas" :key="index">
-                    <div class="left" v-if="item.posicion == 2">
+                <div v-for="(item, index) in this.subastaActiva.chat.pujas" :key="index">
+
+                    <div class="left" v-if="(item.usuario.nombreUsuario != $store.state.usuarioLogeado.nombreUsuario)">
                         <vs-button color="#3B4254">
-                            {{ item.nombre }} : {{ item.texto }}
+                            {{ item.usuario.nombreUsuario }} : {{ item.monto }}
                         </vs-button>
                     </div>
-                    <div class="right" v-if="item.posicion == 1">
+
+                    <div class="right" v-if="item.usuario.nombreUsuario == $store.state.usuarioLogeado.nombreUsuario">
                         <vs-button color="#5576D4">
-                            {{ item.nombre }} : {{ item.texto }}
+                            {{ item.usuario.nombreUsuario }} : {{ item.monto }}
                         </vs-button>
                     </div>
                 </div>
@@ -26,7 +28,7 @@
 
             <vs-input type="number" dark state="dark" v-model="value5"
                 label-placeholder="Ingrese un monto para pujar" />
-            <vs-button color="#39E37F">Enviar Puja</vs-button>
+            <vs-button @click="enviarPuja" color="#39E37F">Enviar Puja</vs-button>
         </div>
 
         <p>Nota: El monto de ser superior que la ultima puja.</p>
@@ -60,12 +62,57 @@ export default {
                     posicion: 2,
                 },
             ],
+            puja: {
+                usuario: null,
+                monto: null,
+                fecha: null,
+
+            }
         };
     },
-    props:{
-        subastaActiva:{}
-    }
-    
+    props: {
+        subastaActiva: {}
+    },
+    methods: {
+        enviarPuja() {
+
+            const puja = {
+                usuario: null,
+                monto: null,
+                fecha: null,
+            }
+
+            puja.usuario = this.$store.state.usuarioLogeado
+            puja.monto = this.value5
+            puja.fecha = Date.now()
+
+            console.log(this.puja)
+
+            this.subastaActiva.chat.pujas.push(puja)
+
+            console.log(this.subastaActiva.chat.pujas)
+
+            this.actualizarSubasta()
+
+            /* this.puja.usuario = null
+            this.puja.monto = null
+            this.puja.fecha = null */
+
+
+        },
+        actualizarSubasta() {
+            this.axios.put('/subasta/'+this.subastaActiva._id,this.subastaActiva)
+                .then(res => {
+                    
+                    console.log("Se actulizo el chat")
+                })
+                .catch((e) => {
+                    console.log(e);
+
+                })
+        },
+    },
+
 };
 </script>
 

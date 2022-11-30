@@ -25,7 +25,7 @@
                     <vs-option label="Martillero" value="Martillero">
                         Martillero
                     </vs-option>
-                    <vs-option label="Martillero" value="Admin">
+                    <vs-option label="Admin" value="Admin">
                         Admin
                     </vs-option>
 

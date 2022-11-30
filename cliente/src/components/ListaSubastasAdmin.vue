@@ -9,7 +9,7 @@
                             local_offer
                         </span>
 
-                        <p>Nombre: {{ item.nameProducto }} [{{ item.montoInicial }}]</p>
+                        <p>Nombre: {{ item.producto.nombreProducto }} [{{ item.duracion }}]</p>
 
                     </vs-button>
 
@@ -48,7 +48,7 @@ export default {
 
     methods: {
         listarsubastas() {
-            this.axios.get(this.$store.getters.getLocalhost+'/subasta')
+            this.axios.get('/subasta')
                 .then((res) => {
                     this.subastas = res.data
                     this.subastas.forEach(element => {
@@ -60,7 +60,7 @@ export default {
                 })
         },
         eliminarsubasta(id) {
-            this.axios.delete(this.$store.getters.getLocalhost+"/subasta/" + id)
+            this.axios.delete("/subasta/" + id)
                 .then(res => {
                     const index = this.subastas.findIndex(item => item._id == res.data._id)
                     this.subastas.splice(index, 1)

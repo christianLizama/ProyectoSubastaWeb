@@ -8,8 +8,6 @@
                         <div @click="chatSubasta(item)">
                             <CartaSubasta :subasta="item" :valor="bandera" />
                         </div>
-
-
                     </div>
                 </vs-row>
 
@@ -49,7 +47,7 @@ export default {
     },
     methods: {
         listarsubastas() {
-            this.axios.get(this.$store.getters.getLocalhost + '/subasta')
+            this.axios.get('/subasta')
                 .then((res) => {
                     this.subastas = res.data
 
@@ -59,7 +57,7 @@ export default {
                 })
         },
         chatSubasta(subasta) {
-            console.log("hosadas")
+            
             this.chatSubastaActiva = subasta;
             this.subastaActiva = true
         },

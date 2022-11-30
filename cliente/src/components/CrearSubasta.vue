@@ -7,15 +7,14 @@
 
         <vs-row justify="center">
             <div class="contenedor">
-
-                <vs-select label="Seleccionar Producto" placeholder="Seleccionar Producto" v-model="productoss">
-
-                    <vs-option v-for="item in productos" :label="item.nombreProducto" :value="item._id">
+                <vs-select v-model="value" v-if="(productos.length > 0)" label="Seleccione producto">
+                    <vs-option v-for="(item, index) in productos" :key="index" :label="item.nombreProducto"
+                        :value="item._id">
                         {{ item.nombreProducto }}
                     </vs-option>
 
-
                 </vs-select>
+
                 <hr>
 
                 <vs-input label="Duración de subasta" v-model="subasta.duracion" />
@@ -36,7 +35,6 @@
 </template>
 
 <script>
-
 export default {
     data() {
 
@@ -47,11 +45,15 @@ export default {
                 duracion: null,
                 estado: true,
                 producto: null,
-                chat: null
+                chat: {
+                    pujas:[]
+                }
             },
-            productos: [],
-            produtoss:[]
+            productos: []
         }
+    },
+    components: {
+
     },
     created() {
         this.listarProdutos();
@@ -59,6 +61,22 @@ export default {
     methods: {
         agregarsubasta() {
 
+            this.axios.get('/producto/' + this.value)
+                .then(res => {
+                    this.subasta.producto = res.data
+                    this.value=""
+                    this.crearSubasta()
+                })
+                .catch((e) => {
+                    console.log(e);
+                })
+
+
+            console.log(this.subasta)
+
+
+        },
+        crearSubasta() {
             this.axios.post('/nuevo-subasta', this.subasta)
                 .then(res => {
                     this.subasta.producto = null
@@ -69,17 +87,11 @@ export default {
                     console.log(e);
 
                 })
-
         },
         listarProdutos() {
             this.axios.get('/producto')
                 .then((res) => {
                     this.productos = res.data
-
-                    res.data.forEach(element => {
-                        this.productoss.push(element)
-                    });
-                    console.log(this.productoss[0].nombreProducto)
                 })
                 .catch((e) => {
                     console.log(e.response);
