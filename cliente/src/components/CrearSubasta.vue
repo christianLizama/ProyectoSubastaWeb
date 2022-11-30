@@ -8,16 +8,17 @@
         <vs-row justify="center">
             <div class="contenedor">
 
-                <vs-select label="Seleccionar Producto" placeholder="Seleccionar Producto" v-model="subasta.producto">
-                    <div v-for="(item, index) in items" :key="index">
-                        <vs-option :label="item.nombreProducto" :value="item._id">
-                            {{item.nombreProducto}}
-                        </vs-option>
-                    </div>
+                <vs-select label="Seleccionar Producto" placeholder="Seleccionar Producto" v-model="productoss">
+
+                    <vs-option v-for="item in productos" :label="item.nombreProducto" :value="item._id">
+                        {{ item.nombreProducto }}
+                    </vs-option>
+
 
                 </vs-select>
                 <hr>
-                <vs-input label="Duración de subasta" v-model="subasta.namesubasta" />
+
+                <vs-input label="Duración de subasta" v-model="subasta.duracion" />
                 <vs-button @click="agregarsubasta">Crear subasta</vs-button>
             </div>
 
@@ -48,38 +49,41 @@ export default {
                 producto: null,
                 chat: null
             },
+            productos: [],
+            produtoss:[]
         }
+    },
+    created() {
+        this.listarProdutos();
     },
     methods: {
         agregarsubasta() {
 
-            if (this.subasta.montoInicial != "" && this.subasta.namesubasta != "" && this.subasta.tiempo != "") {
-                if (this.subasta.pass == this.passConfirmar) {
-                    this.axios.post(this.$store.getters.getLocalhost + '/nuevo-subasta', this.subasta)
-                        .then(res => {
-                            this.subasta.namesubasta = ""
+            this.axios.post('/nuevo-subasta', this.subasta)
+                .then(res => {
+                    this.subasta.producto = null
+                    this.subasta.duracion = null
+                    this.openNotification("success", "Exito", "Nueva subasta agregado")
+                })
+                .catch((e) => {
+                    console.log(e);
 
-                            this.subasta.montoInicial = ""
-                            this.subasta.tiempo = ""
-                            this.openNotification("success", "Exito", "Nueva subasta agregado")
-                        })
-                        .catch((e) => {
-                            console.log(e);
+                })
 
-                        })
-                }
-                else {
-                    this.openNotification("danger", "Error", "Las contraseñas no coinciden.")
+        },
+        listarProdutos() {
+            this.axios.get('/producto')
+                .then((res) => {
+                    this.productos = res.data
 
-                }
-
-            }
-            else {
-                this.openNotification("danger", "Error", "Falta informcion.")
-
-            }
-
-
+                    res.data.forEach(element => {
+                        this.productoss.push(element)
+                    });
+                    console.log(this.productoss[0].nombreProducto)
+                })
+                .catch((e) => {
+                    console.log(e.response);
+                })
         },
         openNotification(color, titulo, texto) {
             const noti = this.$vs.notification({

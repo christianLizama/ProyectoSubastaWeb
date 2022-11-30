@@ -1,6 +1,6 @@
 <template>
     <div class="hidden">
-        <h3>Lista de usuarios</h3>
+        <h3>Lista de Productos</h3>
         <vs-row justify="center">
             <vs-col w="9">
                 <div v-for="(item, index) in usuarios" :key="index">
@@ -9,7 +9,7 @@
                             account_circle
                         </span>
 
-                        <p>Usuario: {{ item.nombreUsuario }} [{{ item.tipoUsuario }}]</p>
+                        <p>Usuario: {{ item.nombreProducto }}</p>
 
                     </vs-button>
 
@@ -43,12 +43,11 @@ export default {
         };
     },
     created() {
-        this.listarUsuarios();
+        this.listarProdutos();
     },
-
     methods: {
-        listarUsuarios() {
-            this.axios.get(this.$store.getters.getLocalhost+'/usuario')
+        listarProdutos() {
+            this.axios.get('/producto')
                 .then((res) => {
                     this.usuarios = res.data
 
@@ -58,7 +57,7 @@ export default {
                 })
         },
         eliminarUsuario(id) {
-            this.axios.delete(this.$store.getters.getLocalhost+"/usuario/" + id)
+            this.axios.delete("/producto/" + id)
                 .then(res => {
                     const index = this.usuarios.findIndex(item => item._id == res.data._id)
                     this.usuarios.splice(index, 1)

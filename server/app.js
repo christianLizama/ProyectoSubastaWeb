@@ -10,7 +10,7 @@ const app = express();
 /* const uri = 'mongodb://localhost:27017/myapp'; */
 //hola
 //Conexion DB nubr
-const uri = 'mongodb+srv://Rodrigo:8keWxOkI6SB0gfcb@cluster0.06qe1.mongodb.net/?retryWrites=true&w=majority';
+const uri = 'mongodb+srv://proyecto:proyecto@cluster0.lafxcfw.mongodb.net/test';
 const options = {useNewUrlParser: true};
 // Or using promises
 mongoose.connect(uri, options).then(

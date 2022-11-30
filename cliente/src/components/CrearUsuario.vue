@@ -25,6 +25,9 @@
                     <vs-option label="Martillero" value="Martillero">
                         Martillero
                     </vs-option>
+                    <vs-option label="Martillero" value="Admin">
+                        Admin
+                    </vs-option>
 
                 </vs-select>
 
@@ -60,8 +63,8 @@ export default {
     methods: {
         agregarusuario() {
 
-            if (this.usuario.pass != "" && this.usuario.userName != "" && this.usuario.rol != "") {
-                if (this.usuario.pass == this.passConfirmar) {
+            if (this.usuario.contra != "" && this.usuario.nombreUsuario != "" && this.usuario.tipoUsuario != "") {
+                if (this.usuario.contra == this.passConfirmar) {
                     this.axios.post(this.$store.getters.getLocalhost + '/nuevo-usuario', this.usuario)
                         .then(res => {
                             this.usuario.nombreUsuario = ""

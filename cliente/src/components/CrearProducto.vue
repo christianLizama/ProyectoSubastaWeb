@@ -7,7 +7,7 @@
 
         <vs-row justify="center">
             <div class="contenedor">
-                <vs-input label="Nombre del Producto" v-model="producto.nameProducto" />
+                <vs-input label="Nombre del Producto" v-model="producto.nombreProducto" />
                 <vs-input label="Monto Inicial" v-model="producto.montoInicial" />
                 <vs-button @click="agregarproducto">Crear producto</vs-button>
             </div>
@@ -41,14 +41,12 @@ export default {
     methods: {
         agregarproducto() {
 
-            if (this.producto.montoInicial != "" && this.producto.nameProducto != "" && this.producto.tiempo != "") {
-                if (this.producto.pass == this.passConfirmar) {
-                    this.axios.post(this.$store.getters.getLocalhost + '/nuevo-producto', this.producto)
+            if (this.producto.montoInicial != "" && this.producto.nombreProducto != "") {
+                    this.axios.post('/nuevo-producto', this.producto)
                         .then(res => {
-                            this.producto.nameProducto = ""
+                            this.producto.nombreProducto = ""
 
                             this.producto.montoInicial = ""
-                            this.producto.tiempo = ""
                             this.openNotification("success", "Exito", "Nueva producto agregado")
                         })
                         .catch((e) => {
@@ -60,10 +58,6 @@ export default {
                     this.openNotification("danger", "Error", "Las contraseñas no coinciden.")
 
                 }
-
-            }
-            else {
-                this.openNotification("danger", "Error", "Falta informcion.")
 
             }
 
@@ -79,9 +73,8 @@ export default {
             })
         }
 
-    },
+    }
 
-}
 </script>
 
 <style scoped>

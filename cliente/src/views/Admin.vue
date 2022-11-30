@@ -29,6 +29,14 @@
                 </template>
                 Crear Productos
             </vs-sidebar-item>
+            <vs-sidebar-item id="listaProducto">
+                <template #icon>
+                    <span class="material-icons-outlined">
+                        local_offer
+                    </span>
+                </template>
+                Lista Producto
+            </vs-sidebar-item>
             <vs-sidebar-item id="crearSubasta">
                 <template #icon>
                     <span class="material-icons-outlined">
@@ -67,6 +75,10 @@
             <CrearProducto />
 
         </div>
+        <div v-if="active == 'listaProducto'">
+            <ListaProducto/>
+
+        </div>
         <div v-if="active == 'listaSubasta'">
             <ListaSubastasAdmin />
         </div>
@@ -82,6 +94,7 @@ import CrearUsuario from '@/components/CrearUsuario.vue';
 import ListaUsuario from '@/components/ListaUsuario.vue';
 import ListaSubastasAdmin from '@/components/ListaSubastasAdmin.vue';
 import CrearSubasta from '@/components/CrearSubasta.vue';
+import ListaProducto from '@/components/ListaProducto.vue';
 
 export default {
     data: () => ({
@@ -93,7 +106,7 @@ export default {
             this.$router.push({ path: '/' })
         } */
     },
-    components: { CrearUsuario, ListaUsuario, CrearProducto, ListaSubastasAdmin, CrearSubasta },
+    components: { CrearUsuario, ListaUsuario, CrearProducto, ListaSubastasAdmin, CrearSubasta, ListaProducto },
     methods: {
         cerrarSesion() {
             this.$router.push({ path: '/' })
