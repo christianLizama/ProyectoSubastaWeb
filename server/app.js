@@ -1,69 +1,51 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-const http = require('http').createServer(app);
+import express from 'express';
+import morgan from 'morgan';
+import cors from 'cors';
+import path from 'path';
+import mongoose from 'mongoose';
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const app = express();
 
-var app = express();
+//Conexion DB Local
+/* const uri = 'mongodb://localhost:27017/myapp'; */
+//hola
+//Conexion DB nubr
+const uri = 'mongodb+srv://Rodrigo:8keWxOkI6SB0gfcb@cluster0.06qe1.mongodb.net/?retryWrites=true&w=majority';
+const options = {useNewUrlParser: true};
+// Or using promises
+mongoose.connect(uri, options).then(
+  () => { console.log('Conectado a DB') },
+  err => { console.log(err) }
+);
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-
-
-app.use(logger('dev'));
+// Middleware
+app.use(morgan('tiny'));
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
+
+// Rutas
+/* app.get('/', (req, res) => {
+  res.send('Hello World!');
+}); */
+
+app.use('/api', require('./routes/Chat'));
+app.use('/api', require('./routes/Compra'));
+app.use('/api', require('./routes/Producto'));
+app.use('/api', require('./routes/Puja'));
+app.use('/api', require('./routes/Reporte'));
+app.use('/api', require('./routes/Subasta'));
+app.use('/api', require('./routes/Usuario'));
+
+
+
+// Middleware para Vue.js router modo history
+const history = require('connect-history-api-fallback');
+app.use(history());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+app.set('puerto', process.env.PORT || 3000);
+app.listen(app.get('puerto'), () => {
+  console.log('Example app listening on port'+ app.get('puerto'));
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
-
-const io = require('socket.io')(http, {
-  cors: {
-    origins: ['http://localhost:8080']
-  }
-});
-
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
-  socket.on('my message', (msg) => {
-    console.log('message: ' + msg);
-  });
-  socket.on('my message', (msg) => {
-    io.emit('my broadcast', `server: ${msg}`);
-  });
-});
-
-//Puerto de socket
-var port = 3030;
-
-http.listen(port, () => {
-  console.log('listening on :',port);
-});
-
-module.exports = app;
