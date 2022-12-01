@@ -1,7 +1,8 @@
 <template>
     <div class="contendorGrande">
-        <h1>Subasta de : {{ this.subasta.producto.nombreProducto }}</h1>
-        <h2>Ultimo monto Pujado {{ this.subasta.ultimaPuja }}</h2>
+        <!-- <h1>Subasta de : {{ subasta.producto.nombreProducto }}</h1> -->
+        <h1>Subasta de : {{ nombreP }}</h1>
+        <h2>Ultimo monto Pujado {{subasta.ultimaPuja }}</h2>
         <div class="contenedorChat">
             <div class="participantes">
                 <h3>Participantes Activos</h3>
@@ -24,6 +25,7 @@
             </div>
 
         </div>
+        
         <div class="enviar">
 
             <vs-input type="number" dark state="dark" v-model="value5"
@@ -36,6 +38,7 @@
 </template>
 
 <script>
+import SocketioService from '../services/socketio.service.js';
 export default {
     data() {
         return {
@@ -45,23 +48,23 @@ export default {
                 usuario: null,
                 monto: null,
                 fecha: null,
-
+                id: null
             },
-            subasta: null
+            subasta: null,
+            mensajes:[],
+            nombreP:"",
         };
-    },
-    watch: {
-        'subasta.chat.pujas': function (oldvalue,newvalue) {
-
-            if(newvalue!==oldvalue){
-        
-            }
-            console.log("sadsadsadsadsadsadsa")
-        }
-
     },
     created() {
         this.getSubasta()
+        SocketioService.setupSocketConnection();
+        SocketioService.broadcast();
+    },
+    beforeUnmount() {
+        SocketioService.disconnect();
+    },
+    mounted(){
+        this.obtenerMsj()
     },
     props: {
         subastaActiva: {}
@@ -71,8 +74,7 @@ export default {
             this.axios.get('/subasta/' + this.subastaActiva._id)
                 .then((res) => {
                     this.subasta = res.data
-                   
-
+                    this.nombreP = res.data.producto.nombreProducto
                 })
                 .catch((e) => {
                     console.log(e.response);
@@ -84,19 +86,21 @@ export default {
                 usuario: null,
                 monto: null,
                 fecha: null,
+                id:null
             }
 
             puja.usuario = this.$store.state.usuarioLogeado
             puja.monto = this.value5
             puja.fecha = Date.now()
+            puja.id = this.subasta._id
 
-            console.log(this.puja)
+            //console.log(this.puja)
 
-            this.subasta.chat.pujas.push(puja)
+            //this.subasta.chat.pujas.push(puja)
 
-            console.log(this.subasta.chat.pujas)
-
-            this.actualizarSubasta()
+            //console.log(this.subasta.chat.pujas)
+           
+            this.enviarMensaje(puja)
 
             /* this.puja.usuario = null
             this.puja.monto = null
@@ -107,14 +111,26 @@ export default {
         actualizarSubasta() {
             this.axios.put('/subasta/' + this.subasta._id, this.subasta)
                 .then(res => {
-
                     console.log("Se actulizo el chat")
                 })
                 .catch((e) => {
-                    console.log(e);
-
                 })
         },
+        obtenerMsj(){
+            SocketioService.socket.on(
+                "mensaje:recibido" , (data) =>{
+                    if(this.subasta._id == data.id ){
+                        this.subasta.chat.pujas.push(data)
+                        this.actualizarSubasta()
+                    }
+                }
+            )
+        },
+        enviarMensaje(puja){
+            //console.log(puja)
+            //this.mensajes.push(this.texto)
+            SocketioService.sendMessage(puja);
+        }
     },
 
 };

@@ -3,6 +3,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import path from 'path';
 import mongoose from 'mongoose';
+const http = require('http').createServer(app);
 
 const app = express();
 
@@ -49,3 +50,34 @@ app.listen(app.get('puerto'), () => {
   console.log('Example app listening on port'+ app.get('puerto'));
 });
 
+
+const io = require('socket.io')(http, {
+  allowEIO3: true,
+  cors: {
+      origin: true,
+      credentials: true,
+  },
+});
+
+io.on('connection', (socket) => {
+  console.log('a user connected');
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+  socket.on('my message', (msg) => {
+    console.log('message: ' + msg);
+  });
+  socket.on('my message', (msg) => {
+    io.emit('my broadcast', `server: ${msg}`);
+  });
+  socket.on('message' ,(msg)=>{
+    io.emit('mensaje:recibido', msg)
+  });
+});
+
+//Puerto de socket
+var portsocket = process.env.SOCKETPORT || 5003 ;
+
+http.listen(portsocket, () => {
+  console.log('listening on :',portsocket);
+});

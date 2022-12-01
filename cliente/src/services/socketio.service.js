@@ -1,4 +1,4 @@
-import { io } from 'socket.io-client';
+import * as io from 'socket.io-client'
 
 class SocketioService {
     socket;
@@ -8,6 +8,11 @@ class SocketioService {
         this.socket.on('my broadcast', (data) => {
             console.log(data);
         });
+    }
+    sendMessage(puja) {
+        if(this.socket){
+            this.socket.emit('message', puja);
+        }
     }
     setupSocketConnection() {
         this.socket = io(process.env.VUE_APP_SOCKET_ENDPOINT);
