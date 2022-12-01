@@ -10,4 +10,4 @@ COPY . /app
 
 EXPOSE 5001
 
-CMD ["npm", "run", "serve"]
+CMD ["npm", "run", "devbabel"]
