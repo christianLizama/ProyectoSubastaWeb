@@ -64,6 +64,7 @@
                 </vs-sidebar-item>
             </div>
         </vs-sidebar>
+        
         <div v-if="active == 'crearUsuario'">
             <CrearUsuario />
         </div>
@@ -78,12 +79,6 @@
         <div v-if="active == 'listaProducto'">
             <ListaProducto/>
 
-        </div>
-        <div v-if="active == 'listaSubasta'">
-            <ListaSubastasAdmin />
-        </div>
-        <div v-if="active=='crearSubasta'">
-            <CrearSubasta/>
         </div>
 
     </div>

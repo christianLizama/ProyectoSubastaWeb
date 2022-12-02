@@ -48,7 +48,7 @@ export default {
 
     methods: {
         listarUsuarios() {
-            this.axios.get(this.$store.getters.getLocalhost+'/usuario')
+            this.axios.get('/usuario')
                 .then((res) => {
                     this.usuarios = res.data
 
@@ -58,7 +58,7 @@ export default {
                 })
         },
         eliminarUsuario(id) {
-            this.axios.delete(this.$store.getters.getLocalhost+"/usuario/" + id)
+            this.axios.delete("/usuario/" + id)
                 .then(res => {
                     const index = this.usuarios.findIndex(item => item._id == res.data._id)
                     this.usuarios.splice(index, 1)

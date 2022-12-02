@@ -116,6 +116,7 @@ export default {
 .hidden {
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
 .vs-input-parent {

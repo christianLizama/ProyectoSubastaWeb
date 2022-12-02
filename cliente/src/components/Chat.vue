@@ -2,10 +2,25 @@
     <div class="contendorGrande">
         <!-- <h1>Subasta de : {{ subasta.producto.nombreProducto }}</h1> -->
         <h1>Subasta de : {{ nombreP }}</h1>
-        <h2>Ultimo monto Pujado {{subasta.ultimaPuja }}</h2>
+        <h2>Ultimo monto Pujado {{ this.subasta.ultimaPuja }}</h2>
+        <div v-if="martillero == 'martillero'" class="botonTerminar">
+            <vs-button>
+                <span class="material-icons-outlined">
+                    gavel
+                </span>
+
+                Finalizar Subasta
+            </vs-button>
+        </div>
         <div class="contenedorChat">
+
+
             <div class="participantes">
                 <h3>Participantes Activos</h3>
+                <div v-for="(item, index) in participantes" :key="index">
+                    {{ item }}
+                </div>
+
             </div>
             <div class="chat">
                 <div v-for="(item, index) in this.subasta.chat.pujas" :key="index">
@@ -25,8 +40,8 @@
             </div>
 
         </div>
-        
-        <div class="enviar">
+
+        <div v-if="martillero != 'martillero'" class="enviar">
 
             <vs-input type="number" dark state="dark" v-model="value5"
                 label-placeholder="Ingrese un monto para pujar" />
@@ -51,23 +66,28 @@ export default {
                 id: null
             },
             subasta: null,
-            mensajes:[],
-            nombreP:"",
+            mensajes: [],
+            nombreP: "",
+            participantes: []
         };
     },
     created() {
         this.getSubasta()
         SocketioService.setupSocketConnection();
         SocketioService.broadcast();
+        console.log(this.martillero)
+        this.obtenerParticipantes()
+        /* this.obtenerUltimaPuja() */
     },
     beforeUnmount() {
         SocketioService.disconnect();
     },
-    mounted(){
+    mounted() {
         this.obtenerMsj()
     },
     props: {
-        subastaActiva: {}
+        subastaActiva: {},
+        martillero: ""
     },
     methods: {
         getSubasta() {
@@ -86,7 +106,7 @@ export default {
                 usuario: null,
                 monto: null,
                 fecha: null,
-                id:null
+                id: null
             }
 
             puja.usuario = this.$store.state.usuarioLogeado
@@ -94,17 +114,7 @@ export default {
             puja.fecha = Date.now()
             puja.id = this.subasta._id
 
-            //console.log(this.puja)
-
-            //this.subasta.chat.pujas.push(puja)
-
-            //console.log(this.subasta.chat.pujas)
-           
             this.enviarMensaje(puja)
-
-            /* this.puja.usuario = null
-            this.puja.monto = null
-            this.puja.fecha = null */
 
 
         },
@@ -116,20 +126,62 @@ export default {
                 .catch((e) => {
                 })
         },
-        obtenerMsj(){
+        obtenerMsj() {
             SocketioService.socket.on(
-                "mensaje:recibido" , (data) =>{
-                    if(this.subasta._id == data.id ){
+                "mensaje:recibido", (data) => {
+                    if (this.subasta._id == data.id) {
                         this.subasta.chat.pujas.push(data)
                         this.actualizarSubasta()
                     }
                 }
             )
         },
-        enviarMensaje(puja){
-            //console.log(puja)
-            //this.mensajes.push(this.texto)
+        enviarMensaje(puja) {
             SocketioService.sendMessage(puja);
+            
+        },
+        obtenerParticipantes() {
+
+            this.subastaActiva.chat.pujas.forEach(element1 => {
+                const aux = true
+
+                this.participantes.push(element1.usuario.nombreUsuario)
+            });
+
+            const dataArr = new Set(this.participantes);
+
+            this.participantes = [...dataArr];
+
+        },
+        obtenerUltimaPuja() {
+            const ultimaPuja2 = {
+                usuario: null,
+                monto: 0,
+                fecha: null,
+                id: null
+            }
+
+            this.subastaActiva.chat.pujas.forEach(puja => {
+
+                if (parseInt(puja.monto) > ultimaPuja2.monto) {
+
+                    ultimaPuja2.usuario = puja.usuario,
+                        ultimaPuja2.monto = puja.monto,
+                        ultimaPuja2.fecha = puja.fecha,
+                        ultimaPuja2.id = puja.id
+
+                }
+            });
+
+
+            this.subasta.ultimaPuja.usuario = ultimaPuja2.usuario,
+                this.subasta.ultimaPuja.monto = ultimaPuja2.monto,
+                this.subasta.ultimaPuja.fecha = ultimaPuja2.fecha,
+                this.subasta.ultimaPuja.id = ultimaPuja2.id
+
+
+
+
         }
     },
 
@@ -204,5 +256,10 @@ input {
     color: aliceblue;
     background-color: #222f54;
     text-align: center;
+}
+
+.botonTerminar {
+    display: flex;
+    justify-content: center;
 }
 </style>

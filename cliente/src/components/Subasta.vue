@@ -20,6 +20,7 @@
             
             <Chat 
             :subastaActiva="this.chatSubastaActiva"
+            :martillero="this.bandera"
             />
 
         </div>
@@ -37,7 +38,7 @@ export default {
         return {
             subastas: [],
             subastaActiva: false,
-            chatSubastaActiva: {}
+            chatSubastaActiva: {},
         };
     },
     props: {
@@ -61,6 +62,7 @@ export default {
 
             this.chatSubastaActiva = subasta;
             this.subastaActiva = true
+
         },
         volver(){
             this.subastaActiva = false;

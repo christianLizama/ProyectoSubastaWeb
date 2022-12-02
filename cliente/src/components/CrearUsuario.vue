@@ -65,7 +65,7 @@ export default {
 
             if (this.usuario.contra != "" && this.usuario.nombreUsuario != "" && this.usuario.tipoUsuario != "") {
                 if (this.usuario.contra == this.passConfirmar) {
-                    this.axios.post(this.$store.getters.getLocalhost + '/nuevo-usuario', this.usuario)
+                    this.axios.post('/nuevo-usuario', this.usuario)
                         .then(res => {
                             this.usuario.nombreUsuario = ""
                             this.usuario.contra = ""
