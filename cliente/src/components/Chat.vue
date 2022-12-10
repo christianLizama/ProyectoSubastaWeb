@@ -52,7 +52,7 @@
             <vs-button @click="enviarPuja" color="#39E37F">Enviar Puja</vs-button>
         </div>
 
-        <p>Nota: El monto de ser superior que la ultima puja.</p>
+        <p v-if="martillero != 'martillero'">Nota: El monto de ser superior que la ultima puja.</p>
     </div>
 </template>
 
@@ -62,7 +62,6 @@ export default {
     data() {
         return {
             value5: '',
-
             puja: {
                 usuario: null,
                 monto: null,
@@ -88,8 +87,6 @@ export default {
     },
     mounted() {
         this.obtenerMsj()
-        
-
     },
     props: {
         subastaActiva: {},
@@ -125,7 +122,17 @@ export default {
 
 
             if (this.subasta.ultimaPuja == null) {
-                this.enviarMensaje(puja)
+                const valor1 = parseInt(this.subasta.producto.montoInicial)
+                const valor2 = parseInt(puja.monto)
+                if (valor2 > valor1) {
+                    this.subasta.ultimaPuja = puja
+                    this.enviarMensaje(puja)
+                    this.openNotification("top-right", "success", "Exito!", "Puja aceptada.")
+
+                }
+                else {
+                    this.openNotification("top-right", "danger", "Aviso", "Solo se aceptan pujas superiores al ultimo monto fijado.")
+                }
             }
             else {
 

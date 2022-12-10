@@ -37,22 +37,6 @@
                 </template>
                 Lista Producto
             </vs-sidebar-item>
-            <vs-sidebar-item id="crearSubasta">
-                <template #icon>
-                    <span class="material-icons-outlined">
-                        local_offer
-                    </span>
-                </template>
-                Crear Subasta
-            </vs-sidebar-item>
-            <vs-sidebar-item id="listaSubasta">
-                <template #icon>
-                    <span class="material-icons-outlined">
-                        gavel
-                    </span>
-                </template>
-                Lista de subasta
-            </vs-sidebar-item>
             <div @click="cerrarSesion">
                 <vs-sidebar-item id="cerrarSesion">
                     <template #icon>
@@ -105,6 +89,7 @@ export default {
     methods: {
         cerrarSesion() {
             this.$router.push({ path: '/' })
+            this.$store.dispatch("salir");
         }
     },
 }

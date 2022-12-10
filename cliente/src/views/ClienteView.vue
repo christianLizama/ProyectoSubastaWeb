@@ -61,6 +61,7 @@ export default {
     methods: {
         cerrarSesion() {
             this.$router.push({ path: '/' })
+            this.$store.dispatch("salir");
         },
 
     },

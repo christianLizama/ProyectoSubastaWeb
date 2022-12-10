@@ -40,6 +40,7 @@ export default {
                     this.usuarios = res.data
                     var logearse = false
                     this.usuarios.forEach(element => {
+                        
 
                         if (element.nombreUsuario == this.userName) {
                             logearse = true
@@ -49,14 +50,17 @@ export default {
                                 if (element.tipoUsuario == "Licitador") {
                                     this.$store.state.usuarioLogeado = element
                                     this.$router.push({ path: '/cliente' })
+                                    this.$store.dispatch("guardarUsuario",element);
                                 }
                                 else if(element.tipoUsuario == "Martillero") {
                                     this.$store.state.usuarioLogeado = element
                                     this.$router.push({ path: '/martillero' })
+                                    this.$store.dispatch("guardarUsuario",element);
                                 }
                                 else{
                                     this.$store.state.usuarioLogeado = element
                                     this.$router.push({ path: '/admin' })
+                                    this.$store.dispatch("guardarUsuario",element);
                                 }
                             }
                             else {
