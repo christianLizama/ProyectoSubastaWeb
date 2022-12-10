@@ -12,12 +12,8 @@
                         :value="item._id">
                         {{ item.nombreProducto }}
                     </vs-option>
-
                 </vs-select>
-
                 <hr>
-
-                <vs-input label="Duración de subasta" v-model="subasta.duracion" />
                 <vs-button @click="agregarsubasta">Crear subasta</vs-button>
             </div>
 

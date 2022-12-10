@@ -17,11 +17,8 @@
             <vs-button color="#F64942" @click="volver" style="position:absolute;left:50px;top: 28px;">
                 Volver
             </vs-button>
-            
-            <Chat 
-            :subastaActiva="this.chatSubastaActiva"
-            :martillero="this.bandera"
-            />
+
+            <Chat :subastaActiva="this.chatSubastaActiva" :martillero="this.bandera" />
 
         </div>
     </div>
@@ -62,11 +59,11 @@ export default {
 
             this.chatSubastaActiva = subasta;
             this.subastaActiva = true
-
         },
-        volver(){
+        volver() {
             this.subastaActiva = false;
-        }
+            this.listarsubastas()
+        },
 
     },
     components: { CartaSubasta, Chat }

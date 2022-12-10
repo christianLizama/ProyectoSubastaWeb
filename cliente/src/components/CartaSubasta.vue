@@ -9,19 +9,11 @@
                     <vs-button color="#5576D4" flat :active="true">
                         <div class="hidden">
                             <p>Monto inicial: {{ this.subasta.producto.montoInicial }}</p>
-                            <p>Ultima puja : {{  }}</p>
+                            <p v-if="this.subasta.ultimaPuja != null">Ultima puja : {{ this.subasta.ultimaPuja.monto }}</p>
+                            <p v-else>Ultima puja : {{ this.subasta.producto.montoInicial }}</p>
                         </div>
 
                     </vs-button>
-                    <p>Usuario activos: 4 </p>
-                    <p>Tiempo restante: {{ this.subasta.duracion}} seg</p>
-
-                    <div v-if="this.valor == 'martillero'">
-                        <vs-button color="dark">
-                            Iniciar subasta
-                        </vs-button>
-
-                    </div>
 
                 </div>
 
@@ -48,10 +40,11 @@ export default {
     },
     props: {
         subasta: [],
-        valor: false
+        valor: false,
+        cantParticipante: 0,
     },
     methods: {
-
+        
     },
 };
 </script>

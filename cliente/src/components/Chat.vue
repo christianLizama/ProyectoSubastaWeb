@@ -2,7 +2,11 @@
     <div class="contendorGrande">
         <!-- <h1>Subasta de : {{ subasta.producto.nombreProducto }}</h1> -->
         <h1>Subasta de : {{ nombreP }}</h1>
-        <h2>Ultimo monto Pujado {{ this.subasta.ultimaPuja }}</h2>
+        <h2 v-if="this.subasta.producto!=null">Monto inicial: {{ this.subasta.producto.montoInicial }}</h2>
+        
+        <h2 v-if="this.subasta.ultimaPuja != null">Ultimo monto Pujado:{{ this.subasta.ultimaPuja.monto }}</h2>
+        <h2 v-else>Ultimo monto Pujado: Aún no hay ofertas.</h2>
+
         <div v-if="martillero == 'martillero'" class="botonTerminar">
             <vs-button>
                 <span class="material-icons-outlined">
@@ -43,7 +47,7 @@
 
         <div v-if="martillero != 'martillero'" class="enviar">
 
-            <vs-input type="number" dark state="dark" v-model="value5"
+            <vs-input type="number" dark state="dark"  @keyup.enter="enviarPuja" v-model="value5"
                 label-placeholder="Ingrese un monto para pujar" />
             <vs-button @click="enviarPuja" color="#39E37F">Enviar Puja</vs-button>
         </div>
@@ -114,7 +118,30 @@ export default {
             puja.fecha = Date.now()
             puja.id = this.subasta._id
 
-            this.enviarMensaje(puja)
+
+
+            if (this.subasta.ultimaPuja == null) {
+                this.enviarMensaje(puja)
+            }
+            else {
+
+                const valor1 = parseInt(this.subasta.ultimaPuja.monto)
+                const valor2 = parseInt(puja.monto)
+
+                if (valor2 > valor1) {
+                    this.subasta.ultimaPuja = puja
+                    this.enviarMensaje(puja)
+                    this.openNotification("top-right", "primary", "Exito!", "Puja aceptada.")
+         
+                }
+                else {
+                    this.openNotification("top-right", "danger", "Aviso", "Solo se aceptan pujas superiores al ultimo monto fijado.")
+                }
+
+
+            }
+
+
 
 
         },
@@ -122,6 +149,8 @@ export default {
             this.axios.put('/subasta/' + this.subasta._id, this.subasta)
                 .then(res => {
                     console.log("Se actulizo el chat")
+
+                    this.obtenerParticipantes()
                 })
                 .catch((e) => {
                 })
@@ -138,7 +167,8 @@ export default {
         },
         enviarMensaje(puja) {
             SocketioService.sendMessage(puja);
-            
+            this.subasta.ultimaPuja = puja
+
         },
         obtenerParticipantes() {
 
@@ -182,6 +212,15 @@ export default {
 
 
 
+        },
+        openNotification(position = null, color, titulo, texto) {
+            const noti = this.$vs.notification({
+                sticky: true,
+                color,
+                position,
+                title: titulo,
+                text: texto
+            })
         }
     },
 
