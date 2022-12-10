@@ -2,8 +2,8 @@
     <div class="contendorGrande">
         <!-- <h1>Subasta de : {{ subasta.producto.nombreProducto }}</h1> -->
         <h1>Subasta de : {{ nombreP }}</h1>
-        <h2 v-if="this.subasta.producto!=null">Monto inicial: {{ this.subasta.producto.montoInicial }}</h2>
-        
+        <h2 v-if="this.subasta.producto != null">Monto inicial: {{ this.subasta.producto.montoInicial }}</h2>
+
         <h2 v-if="this.subasta.ultimaPuja != null">Ultimo monto Pujado:{{ this.subasta.ultimaPuja.monto }}</h2>
         <h2 v-else>Ultimo monto Pujado: Aún no hay ofertas.</h2>
 
@@ -26,7 +26,7 @@
                 </div>
 
             </div>
-            <div class="chat">
+            <div class="chat" id="chat" ref="chat">
                 <div v-for="(item, index) in this.subasta.chat.pujas" :key="index">
 
                     <div class="left" v-if="(item.usuario.nombreUsuario != $store.state.usuarioLogeado.nombreUsuario)">
@@ -47,7 +47,7 @@
 
         <div v-if="martillero != 'martillero'" class="enviar">
 
-            <vs-input type="number" dark state="dark"  @keyup.enter="enviarPuja" v-model="value5"
+            <vs-input dark state="dark" @keyup.enter="enviarPuja" v-model="value5"
                 label-placeholder="Ingrese un monto para pujar" />
             <vs-button @click="enviarPuja" color="#39E37F">Enviar Puja</vs-button>
         </div>
@@ -72,7 +72,7 @@ export default {
             subasta: null,
             mensajes: [],
             nombreP: "",
-            participantes: []
+            participantes: [],
         };
     },
     created() {
@@ -88,6 +88,8 @@ export default {
     },
     mounted() {
         this.obtenerMsj()
+        
+
     },
     props: {
         subastaActiva: {},
@@ -99,6 +101,8 @@ export default {
                 .then((res) => {
                     this.subasta = res.data
                     this.nombreP = res.data.producto.nombreProducto
+                    var objDiv = document.getElementById("chat")
+                    objDiv.scrollTop = objDiv.scrollHeight
                 })
                 .catch((e) => {
                     console.log(e.response);
@@ -131,8 +135,8 @@ export default {
                 if (valor2 > valor1) {
                     this.subasta.ultimaPuja = puja
                     this.enviarMensaje(puja)
-                    this.openNotification("top-right", "primary", "Exito!", "Puja aceptada.")
-         
+                    this.openNotification("top-right", "success", "Exito!", "Puja aceptada.")
+
                 }
                 else {
                     this.openNotification("top-right", "danger", "Aviso", "Solo se aceptan pujas superiores al ultimo monto fijado.")
@@ -151,6 +155,9 @@ export default {
                     console.log("Se actulizo el chat")
 
                     this.obtenerParticipantes()
+
+                    var objDiv = document.getElementById("chat")
+                    objDiv.scrollTop = objDiv.scrollHeight
                 })
                 .catch((e) => {
                 })
@@ -161,6 +168,8 @@ export default {
                     if (this.subasta._id == data.id) {
                         this.subasta.chat.pujas.push(data)
                         this.actualizarSubasta()
+
+
                     }
                 }
             )
@@ -183,36 +192,6 @@ export default {
             this.participantes = [...dataArr];
 
         },
-        obtenerUltimaPuja() {
-            const ultimaPuja2 = {
-                usuario: null,
-                monto: 0,
-                fecha: null,
-                id: null
-            }
-
-            this.subastaActiva.chat.pujas.forEach(puja => {
-
-                if (parseInt(puja.monto) > ultimaPuja2.monto) {
-
-                    ultimaPuja2.usuario = puja.usuario,
-                        ultimaPuja2.monto = puja.monto,
-                        ultimaPuja2.fecha = puja.fecha,
-                        ultimaPuja2.id = puja.id
-
-                }
-            });
-
-
-            this.subasta.ultimaPuja.usuario = ultimaPuja2.usuario,
-                this.subasta.ultimaPuja.monto = ultimaPuja2.monto,
-                this.subasta.ultimaPuja.fecha = ultimaPuja2.fecha,
-                this.subasta.ultimaPuja.id = ultimaPuja2.id
-
-
-
-
-        },
         openNotification(position = null, color, titulo, texto) {
             const noti = this.$vs.notification({
                 sticky: true,
@@ -221,6 +200,16 @@ export default {
                 title: titulo,
                 text: texto
             })
+        },
+        bajarScroll() {
+            /* var e = document.getElementById('chat');
+            //Le añado otro mensaje
+            e.innerHTML += '<div class="chat"></div>';
+            e.innerHTML += '<div class="chat"></div>'; */
+            //Llevo el scroll al fondo
+            var objDiv = document.getElementById("chat")
+            objDiv.scrollTop = objDiv.scrollHeight
+            /* this.$refs["chat"].$el.scrollIntoView({ behavior: 'smooth' }); */
         }
     },
 
