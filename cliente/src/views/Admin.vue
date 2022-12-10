@@ -80,10 +80,6 @@ export default {
         active: "crearUsuario",
     }),
     beforeMount() {
-
-        /* if (this.$store.state.usuarioLogeado.userName == null) {
-            this.$router.push({ path: '/' })
-        } */
     },
     components: { CrearUsuario, ListaUsuario, CrearProducto, ListaSubastasAdmin, CrearSubasta, ListaProducto },
     methods: {

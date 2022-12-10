@@ -9,7 +9,7 @@
                             local_offer
                         </span>
 
-                        <p>Nombre: {{ item.producto.nombreProducto }} [{{ item.duracion }}]</p>
+                        <p>Nombre: {{ item.producto.nombreProducto }}</p>
 
                     </vs-button>
 

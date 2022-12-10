@@ -8,11 +8,14 @@
         <vs-row justify="center">
             <div class="contenedor">
                 <vs-select v-model="value" v-if="(productos.length > 0)" label="Seleccione producto">
-                    <vs-option v-for="(item, index) in productos" :key="index" :label="item.nombreProducto"
+                    <vs-option v-for="(item, index) in putProductos" :key="index" :label="item.nombreProducto"
                         :value="item._id">
+
                         {{ item.nombreProducto }}
+
                     </vs-option>
                 </vs-select>
+                <p v-else>No hay productos para crear subastas.</p>
                 <hr>
                 <vs-button @click="agregarsubasta">Crear subasta</vs-button>
             </div>
@@ -42,7 +45,7 @@ export default {
                 estado: true,
                 producto: null,
                 chat: {
-                    pujas:[]
+                    pujas: []
                 }
             },
             productos: []
@@ -54,14 +57,26 @@ export default {
     created() {
         this.listarProdutos();
     },
+    computed:{
+
+        putProductos() {
+            this.listarProdutos()
+            return this.productos.filter(pro => pro.estado != true)
+        }
+
+
+    },
     methods: {
         agregarsubasta() {
 
             this.axios.get('/producto/' + this.value)
                 .then(res => {
+                    res.data.estado = true
                     this.subasta.producto = res.data
-                    this.value=""
+                    this.value = ""
                     this.crearSubasta()
+                    this.actualizarProducto(res.data)
+
                 })
                 .catch((e) => {
                     console.log(e);
@@ -87,7 +102,8 @@ export default {
         listarProdutos() {
             this.axios.get('/producto')
                 .then((res) => {
-                    this.productos = res.data
+                    const result = res.data.filter(pro => pro.estado != true);
+                    this.productos = result
                 })
                 .catch((e) => {
                     console.log(e.response);
@@ -101,6 +117,22 @@ export default {
                 title: titulo,
                 text: texto
             })
+        },
+        actualizarProducto(producto) {
+            console.log("producot")
+            console.log(producto)
+
+
+            this.axios.put('/producto/' + producto._id, producto)
+                .then((res) => {
+
+                    const result = res.data.filter(pro => pro.estado != true);
+                    this.productos = result
+                })
+                .catch((e) => {
+                    console.log(e.response);
+                })
+
         }
 
     },

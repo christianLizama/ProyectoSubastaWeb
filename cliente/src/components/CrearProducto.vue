@@ -35,6 +35,7 @@ export default {
             producto: {
                 nombreProducto: "",
                 montoInicial: null,
+                estado: false
             },
         }
     },
@@ -42,25 +43,23 @@ export default {
         agregarproducto() {
 
             if (this.producto.montoInicial != "" && this.producto.nombreProducto != "") {
-                    this.axios.post('/nuevo-producto', this.producto)
-                        .then(res => {
-                            this.producto.nombreProducto = ""
+                this.axios.post('/nuevo-producto', this.producto)
+                    .then(res => {
+                        this.producto.nombreProducto = ""
 
-                            this.producto.montoInicial = ""
-                            this.openNotification("success", "Exito", "Nueva producto agregado")
-                        })
-                        .catch((e) => {
-                            console.log(e);
+                        this.producto.montoInicial = ""
 
-                        })
-                }
-                else {
-                    this.openNotification("danger", "Error", "Las contraseñas no coinciden.")
+                        this.openNotification("success", "Exito", "Nueva producto agregado")
+                    })
+                    .catch((e) => {
+                        console.log(e);
 
-                }
+                    })
+            }
+            else {
+                this.openNotification("danger", "Error", "Las contraseñas no coinciden.")
 
             }
-
 
         },
         openNotification(color, titulo, texto) {
@@ -72,8 +71,10 @@ export default {
                 text: texto
             })
         }
+    },
 
-    }
+
+}
 
 </script>
 
