@@ -6,10 +6,7 @@
                 Monto inicial: {{ subasta.producto.montoInicial }}
             </h2>
 
-            <h2 v-if="this.subasta.ultimaPuja != null">
-                Ultimo monto Pujado:{{ ultimoMonto }}
-            </h2>
-            <h2 v-else>Ultimo monto Pujado: Aún no hay ofertas.</h2>
+            <h2>Ultimo monto Pujado:{{ ultimoMonto }}</h2>
 
             <div v-if="martillero == 'martillero'" class="botonTerminar">
                 <vs-button @click="terminarSubasta">
@@ -47,7 +44,7 @@
                 </div>
             </div>
             <div v-else>
-                <h2>Nombre Ganador: {{this.ganador}}</h2>
+                <h2>Nombre Ganador: {{ this.ganador }}</h2>
 
             </div>
 
@@ -87,7 +84,7 @@ export default {
             nombreP: "",
             participantes: [],
             ultimoMonto: 0,
-            ganador:""
+            ganador: ""
         };
     },
     components: { Loading, Ganador },
@@ -207,8 +204,8 @@ export default {
             SocketioService.socket.on("mensaje:recibido", (data) => {
                 if (this.subasta._id == data.id) {
                     this.subasta.chat.pujas.push(data);
+                    this.subasta.ultimaPuja = data
                     this.actualizarSubasta();
-                    console.log(data);
                     this.ultimoMonto = data.monto;
                 }
             });
@@ -248,13 +245,11 @@ export default {
         },
         obtenerTermino() {
             SocketioService.socket.on("termino:recibido", (data) => {
-
+                // this.getSubasta()
                 if (this.subasta._id == data._id) {
                     this.subasta.estado = false
                     this.actualizarSubasta()
-
                     this.ganador = data.ultimaPuja.usuario.nombreUsuario
-
                 }
             });
         },

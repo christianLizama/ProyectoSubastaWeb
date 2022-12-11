@@ -28,6 +28,7 @@
 <script>
 import CartaSubasta from './CartaSubasta.vue';
 import Chat from './Chat.vue';
+import SocketioService from "../services/socketio.service.js";
 
 export default {
     name: "SubastaWebListadoSubasta",
@@ -63,6 +64,7 @@ export default {
         volver() {
             this.subastaActiva = false;
             this.listarsubastas()
+            SocketioService.disconnect();
         },
 
     },
