@@ -1,7 +1,6 @@
 <template>
     <div>
         <div class="contendorGrande" v-if="this.$store.state.conexion">
-            <!-- <h1>Subasta de : {{ subasta.producto.nombreProducto }}</h1> -->
             <h1>Subasta de : {{ nombreP }}</h1>
             <h2 v-if="subasta.producto != null">
                 Monto inicial: {{ subasta.producto.montoInicial }}
@@ -13,13 +12,12 @@
             <h2 v-else>Ultimo monto Pujado: Aún no hay ofertas.</h2>
 
             <div v-if="martillero == 'martillero'" class="botonTerminar">
-                <vs-button>
+                <vs-button @click="terminarSubasta">
                     <span class="material-icons-outlined"> gavel </span>
-
                     Finalizar Subasta
                 </vs-button>
             </div>
-            <div class="contenedorChat">
+            <div v-if="this.subasta.estado == true" class="contenedorChat">
                 <div class="participantes">
                     <h3>Participantes Activos</h3>
                     <div v-for="(item, index) in participantes" :key="index">
@@ -48,8 +46,12 @@
                     </div>
                 </div>
             </div>
+            <div v-else>
+                <h2>Nombre Ganador: {{this.ganador}}</h2>
 
-            <div v-if="martillero != 'martillero'" class="enviar">
+            </div>
+
+            <div v-if="martillero != 'martillero ' && this.subasta.estado == true" class="enviar">
                 <vs-input dark state="dark" @keyup.enter="enviarPuja" v-model="value5"
                     label-placeholder="Ingrese un monto para pujar" />
                 <vs-button @click="enviarPuja" color="#39E37F">Enviar Puja</vs-button>
@@ -69,6 +71,7 @@
 import SocketioService from "../services/socketio.service.js";
 import * as io from "socket.io-client";
 import Loading from "@/components/Loading.vue";
+import Ganador from "./Ganador.vue";
 export default {
     data() {
         return {
@@ -84,9 +87,10 @@ export default {
             nombreP: "",
             participantes: [],
             ultimoMonto: 0,
+            ganador:""
         };
     },
-    components: { Loading },
+    components: { Loading, Ganador },
 
     created() {
         this.getSubasta();
@@ -102,13 +106,15 @@ export default {
         /* this.obtenerUltimaPuja() */
         if (this.subastaActiva.ultimaPuja.monto != null) {
             this.ultimoMonto = this.subastaActiva.ultimaPuja.monto;
+            this.ganador = this.subastaActiva.ultimaPuja.usuario.nombreUsuario
         }
     },
     beforeUnmount() {
         SocketioService.disconnect();
     },
     mounted() {
-        this.obtenerMsj();
+        this.obtenerMsj()
+        this.obtenerTermino()
     },
     props: {
         subastaActiva: {},
@@ -232,14 +238,25 @@ export default {
             });
         },
         bajarScroll() {
-            /* var e = document.getElementById('chat');
-                  //Le añado otro mensaje
-                  e.innerHTML += '<div class="chat"></div>';
-                  e.innerHTML += '<div class="chat"></div>'; */
-            //Llevo el scroll al fondo
+
             var objDiv = document.getElementById("chat");
             objDiv.scrollTop = objDiv.scrollHeight;
-            /* this.$refs["chat"].$el.scrollIntoView({ behavior: 'smooth' }); */
+        },
+        terminarSubasta() {
+            console.log("se termina")
+            SocketioService.sendTermino(this.subasta);
+        },
+        obtenerTermino() {
+            SocketioService.socket.on("termino:recibido", (data) => {
+
+                if (this.subasta._id == data._id) {
+                    this.subasta.estado = false
+                    this.actualizarSubasta()
+
+                    this.ganador = data.ultimaPuja.usuario.nombreUsuario
+
+                }
+            });
         },
     },
 };

@@ -14,6 +14,11 @@ class SocketioService {
             this.socket.emit('message', puja);
         }
     }
+    sendTermino(puja) {
+        if(this.socket){
+            this.socket.emit('termino', puja);
+        }
+    }
     setupSocketConnection() {
         /* this.socket = io(process.env.VUE_APP_SOCKET_ENDPOINT); */
         this.socket = io("http://localhost:5003");

@@ -77,6 +77,11 @@ io.on('connection', (socket) => {
   socket.on('message' ,(msg)=>{
     io.emit('mensaje:recibido', msg)
   });
+  socket.on('termino' ,(msg)=>{
+    io.emit('termino:recibido', msg)
+  });
+
+
 });
 
 //Puerto de socket
