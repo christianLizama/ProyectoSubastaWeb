@@ -59,10 +59,14 @@ const io = require('socket.io')(http, {
   },
 });
 
+let usuariosConectados = 0
 io.on('connection', (socket) => {
+  usuariosConectados++;
+  console.log(usuariosConectados);
   console.log('a user connected');
   socket.on('disconnect', () => {
     console.log('user disconnected');
+    usuariosConectados--;
   });
   socket.on('my message', (msg) => {
     console.log('message: ' + msg);
