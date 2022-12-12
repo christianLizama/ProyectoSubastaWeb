@@ -93,6 +93,7 @@ export default {
         this.getSubasta();
 
         this.socket = io("localhost:5003");
+        //this.socket = io("35.188.227.129:5003");
         this.socket.on("connect_error", (err) => {
             console.log(err.message); // prints the message associated with the error
             this.$store.state.conexion = false;
