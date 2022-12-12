@@ -100,7 +100,7 @@ export default {
         })
         SocketioService.socket = this.socket;
         //SocketioService.broadcast();
-        this.obtenerParticipantes();
+        //this.obtenerParticipantes();
         /* this.obtenerUltimaPuja() */
         if (this.subastaActiva.ultimaPuja.monto != null) {
             this.ultimoMonto = this.subastaActiva.ultimaPuja.monto;
@@ -119,10 +119,30 @@ export default {
         martillero: "",
     },
     methods: {
+        obtenerParticipantes(){
+            this.subasta.chat.pujas.forEach(element => {
+                console.log(element.usuario.nombreUsuario)
+            });
+        },
         getSubasta() {
             this.axios
                 .get("/subasta/" + this.subastaActiva._id)
                 .then((res) => {
+
+                    let arreglo = []
+                    res.data.chat.pujas.forEach(element => {
+                        console.log(element.usuario.nombreUsuario)
+                        arreglo.push(element.usuario.nombreUsuario)
+                    });
+
+                    const dataArr = new Set(arreglo);
+
+                    let result = [...dataArr];
+
+                    result.forEach(element => {
+                        this.participantes.push(element)
+                    });
+                    
                     this.subasta = res.data;
                     this.nombreP = res.data.producto.nombreProducto;
                     var objDiv = document.getElementById("chat");
@@ -194,7 +214,7 @@ export default {
                 .then((res) => {
                     console.log("Se actulizo el chat");
 
-                    this.obtenerParticipantes();
+                    //this.obtenerParticipantes();
 
                     var objDiv = document.getElementById("chat");
                     objDiv.scrollTop = objDiv.scrollHeight;
@@ -208,23 +228,22 @@ export default {
                     this.subasta.ultimaPuja = data
                     this.actualizarSubasta();
                     this.ultimoMonto = data.monto;
+                    let comprobador = true;
+                    this.participantes.forEach(element => {
+                        if(element==data.usuario.nombreUsuario){
+                            comprobador = false
+                        }
+                    });
+                    if(comprobador){
+                        console.log("fui agregado")
+                        this.participantes.push(data.usuario.nombreUsuario)
+                    }
                 }
             });
         },
         enviarMensaje(puja) {
             SocketioService.sendMessage(puja);
             this.subasta.ultimaPuja = puja;
-        },
-        obtenerParticipantes() {
-            this.subastaActiva.chat.pujas.forEach((element1) => {
-                const aux = true;
-
-                this.participantes.push(element1.usuario.nombreUsuario);
-            });
-
-            const dataArr = new Set(this.participantes);
-
-            this.participantes = [...dataArr];
         },
         openNotification(position = null, color, titulo, texto) {
             const noti = this.$vs.notification({
