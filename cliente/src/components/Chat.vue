@@ -8,7 +8,7 @@
 
             <h2>Ultimo monto Pujado:{{ ultimoMonto }}</h2>
 
-            <div v-if="martillero == 'martillero'" class="botonTerminar">
+            <div v-if="martillero == 'martillero' && this.subasta.estado == true" class="botonTerminar">
                 <vs-button @click="terminarSubasta">
                     <span class="material-icons-outlined"> gavel </span>
                     Finalizar Subasta
