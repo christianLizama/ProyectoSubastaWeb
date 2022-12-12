@@ -33,6 +33,14 @@
                     </template>
                     Lista de subasta
                 </vs-sidebar-item>
+                <vs-sidebar-item id="reporte">
+                    <template #icon>
+                        <span class="material-icons-outlined">
+                            gavel
+                        </span>
+                    </template>
+                    Reportes
+                </vs-sidebar-item>
 
                 <div @click="cerrarSesion">
                     <vs-sidebar-item id="cerrarSesion">
@@ -55,6 +63,9 @@
         <div class="contenedor2"  v-if="active == 'crearSubasta'">
             <CrearSubasta />
         </div>
+        <div class="contenedor2"  v-if="active == 'reporte'">
+            <Reportes/>
+        </div>
     </div>
 </template>
 
@@ -62,6 +73,7 @@
 import Subasta from "@/components/Subasta.vue"
 import ListaSubastasAdmin from '@/components/ListaSubastasAdmin.vue';
 import CrearSubasta from '@/components/CrearSubasta.vue';
+import Reportes from "@/components/Reportes.vue";
 export default {
 
     data() {
@@ -88,8 +100,11 @@ export default {
 
     },
     components: {
-        Subasta, ListaSubastasAdmin, CrearSubasta
-    }
+    Subasta,
+    ListaSubastasAdmin,
+    CrearSubasta,
+    Reportes
+}
 
 
 };
